@@ -1,8 +1,13 @@
 const { jsonResponse } = require("../conexion/jsonResponse");
-
+const db = require("../conexion/dataBase");
 const router = require("express").Router();
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../libs/generateTokens");
+const bcrypt = require("bcrypt");
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -13,15 +18,38 @@ router.post("/", (req, res) => {
     );
   }
 
-  const accessToken = "access_token";
-  const refreshToken = "refresh_token";
-  const user = {
-    id: "1",
-    username: "Joe Don",
-    password: "XXXXXXX",
-  };
+  const query = "SELECT * FROM users WHERE username = ?";
+  const [rows] = await db.execute(query, [username]);
 
-  res.status(200).json(jsonResponse(200, { user, accessToken, refreshToken }));
+  if (rows.length === 0) {
+    return res
+      .status(401)
+      .json(jsonResponse(401, { error: "Username or password incorrect" }));
+  }
+
+  const user = rows[0];
+  const correctPassword = await bcrypt.compare(password, user.password);
+
+  if (correctPassword) {
+    //autenticar usuario
+
+    const userPayload = { id: user.id, username: user.username };
+    const accessToken = generateAccessToken(userPayload);
+    const refreshToken = generateRefreshToken(userPayload);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true, // Seguridad: JS no puede leerla
+      secure: false, // false para desarrollo (http), true para producción (https)
+      sameSite: "Lax", // Permite que la cookie se guarde en navegadores modernos
+      maxAge: 30 * 60 * 1000, // Expira en 7 días
+    });
+
+    res.status(200).json(jsonResponse(200, { user: userPayload, accessToken }));
+  } else {
+    res
+      .status(400)
+      .json(jsonResponse(400, { error: "Username or password incorrect" }));
+  }
 });
 
 module.exports = router;

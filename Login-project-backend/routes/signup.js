@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
     //insertar a la base de datos
     const query =
       "INSERT INTO users (name, username, password) VALUE (?, ?, ?)";
-    7;
+
     await db.execute(query, [name, username, hashedPassword]);
 
     res
@@ -32,9 +32,9 @@ router.post("/", async (req, res) => {
     if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(409)
-        .json(jsonResponse(409, { message: "User already exists" }));
+        .json(jsonResponse(409, { error: "User already exists" }));
     }
-    res.status(500).json(jsonResponse(500, { message: "Internal error" }));
+    res.status(500).json(jsonResponse(500, { error: "Internal error" }));
   }
 
   res.send("signup");
