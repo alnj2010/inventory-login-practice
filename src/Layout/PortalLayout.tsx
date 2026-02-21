@@ -15,9 +15,9 @@ export default function PortalLayout({ children }: PortalLayoutProps) {
       <header className="navbar">
         <nav>
           <ul>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
+            <Link to="/dashboard" className="nav-link-button">
+              Dashboard
+            </Link>
           </ul>
         </nav>
         <div className="navbar-user-section">

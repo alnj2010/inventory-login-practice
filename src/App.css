@@ -37,15 +37,15 @@ button {
   color: white;
 }
 
-nav {
+.default-nav {
   background-color: #eee;
 }
 
-nav ul {
+.default-nav ul {
   margin: 0;
 }
 
-nav ul li {
+.default-nav ul li {
   display: inline-block;
   padding: 10px;
 }

@@ -1,12 +1,11 @@
 import React from "react";
 import PortalLayout from "../Layout/PortalLayout";
+import ProductsList from "./ProductsList";
 
 function Dashboard() {
   return (
     <PortalLayout>
-      <div className="titulo">
-        <h1>Aqui ira mi inventario</h1>
-      </div>
+      <ProductsList />
     </PortalLayout>
   );
 }

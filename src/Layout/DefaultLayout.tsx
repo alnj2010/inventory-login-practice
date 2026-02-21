@@ -9,7 +9,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
   return (
     <>
       <header>
-        <nav>
+        <nav className="default-nav">
           <ul>
             <li>
               <Link to="/">Home</Link>
