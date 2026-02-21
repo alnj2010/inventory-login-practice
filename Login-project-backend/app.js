@@ -22,6 +22,7 @@ app.use("/api/signout", require("./routes/signout"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/todos", require("./routes/todos"));
 app.use("/api/refresh-token", require("./routes/refreshToken"));
+app.use("/api/products", require("./routes/products"));
 
 app.get("/", (req, res) => {
   res.send("Hello Word!");
