@@ -33,7 +33,11 @@ router.post("/", async (req, res) => {
   if (correctPassword) {
     //autenticar usuario
 
-    const userPayload = { id: user.id, username: user.username };
+    const userPayload = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
     const accessToken = generateAccessToken(userPayload);
     const refreshToken = generateRefreshToken(userPayload);
 

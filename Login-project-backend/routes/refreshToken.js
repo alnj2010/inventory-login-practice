@@ -15,7 +15,11 @@ router.get("/", async (req, res) => {
   try {
     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
-    const userPayload = { id: payload.id, username: payload.username };
+    const userPayload = {
+      id: payload.id,
+      username: payload.username,
+      role: payload.role,
+    };
     const accessToken = generateAccessToken(userPayload);
 
     return res.status(200).json(
