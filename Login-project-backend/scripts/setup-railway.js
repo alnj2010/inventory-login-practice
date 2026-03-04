@@ -2,21 +2,24 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 async function setupDatabase() {
-  const connection = await mysql.createConnection({
+  console.log("--- Iniciando Script de Base de Datos ---");
+
+  // Usamos la URL completa (más fiable) o los datos sueltos
+  const connectionConfig = process.env.DATABASE_URL || {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-  });
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT || 3306,
+  };
 
   try {
-    console.log("🛠️ Iniciando configuración de la base de datos...");
+    console.log("Intentando conectar...");
+    // createConnection es mejor para scripts rápidos que createPool
+    const connection = await mysql.createConnection(connectionConfig);
+    console.log("✅ Conexión exitosa para inicialización.");
 
-    await connection.query(
-      `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`,
-    );
-    await connection.query(`USE ${process.env.DB_NAME}`);
-    console.log(`✅ Base de datos '${process.env.DB_NAME}' lista.`);
-
+    // AQUÍ VAN TUS TABLAS (Ejemplo, asegúrate que coincidan con las tuyas)
     await connection.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +29,6 @@ async function setupDatabase() {
         role ENUM('USER', 'ADMIN') DEFAULT 'USER'
       )
     `);
-    console.log("✅ Tabla 'users' creada.");
 
     await connection.query(`
        CREATE TABLE IF NOT EXISTS productos (
@@ -49,11 +51,17 @@ async function setupDatabase() {
         ('Audifonos', 110.00, 25)
     `);
 
-    console.log("🚀 ¡Configuración completada con éxito!");
-  } catch (error) {
-    console.error("❌ Error configurando la base de datos:", error);
-  } finally {
+    console.log("✅ Tablas verificadas/creadas correctamente.");
     await connection.end();
+    process.exit(0); // Todo salió bien
+  } catch (error) {
+    console.error("❌ Error en setup.js:", error.message);
+    if (error.code === "ENOTFOUND") {
+      console.error(
+        "CONSEJO: Asegúrate de que DATABASE_URL en Railway sea la URL PÚBLICA de MySQL.",
+      );
+    }
+    process.exit(1); // Error
   }
 }
 
