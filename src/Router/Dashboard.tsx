@@ -1,4 +1,3 @@
-import React from "react";
 import PortalLayout from "../Layout/PortalLayout";
 import ProductsList from "./ProductsList";
 

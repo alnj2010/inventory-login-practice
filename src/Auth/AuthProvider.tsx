@@ -15,7 +15,7 @@ interface AuthProviderProps {
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => {},
-  saveUser: (userData: AuthResponse) => {},
+  saveUser: (_userData: AuthResponse) => {},
   user: null as User | null,
   signOut: () => {},
 });
