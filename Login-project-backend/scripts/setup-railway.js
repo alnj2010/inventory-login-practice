@@ -31,25 +31,26 @@ async function setupDatabase() {
     `);
 
     await connection.query(`
-       CREATE TABLE IF NOT EXISTS productos (
-        id SERIAL PRIMARY KEY,
-        nombre VARCHAR(100) NOT NULL,
-        precio DECIMAL(10, 2) NOT NULL,
-        cantidad INT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    console.log("✅ Tabla 'productos' creada.");
+    CREATE TABLE IF NOT EXISTS productos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL UNIQUE, 
+            precio DECIMAL(10, 2) NOT NULL,
+            cantidad INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
 
+    // 2. Usamos INSERT IGNORE
+    // Esto evitará que se dupliquen si el nombre ya existe
     await connection.query(`
-      INSERT INTO productos (nombre, precio, cantidad) 
-      VALUES ('Producto Inicial', 100.00, 10),
-        ('Laptop', 1300.50, 10),
-        ('MouseBluetooh', 47.00, 50),
-        ('Teclado', 79.99, 30),
-        ('Monitor', 320.00, 15),
-        ('Audifonos', 110.00, 25)
-    `);
+        INSERT IGNORE INTO productos (nombre, precio, cantidad) VALUES 
+            ('Producto Inicial', 100.00, 10),
+            ('Laptop', 1300.50, 10),
+            ('MouseBluetooh', 47.00, 50),
+            ('Teclado', 79.99, 30),
+            ('Monitor', 320.00, 15),
+            ('Audifonos', 110.00, 25)
+`);
 
     console.log("✅ Tablas verificadas/creadas correctamente.");
     await connection.end();
