@@ -68,8 +68,8 @@ router.post("/", async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 30 * 60 * 1000,
     });
 

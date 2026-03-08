@@ -50,7 +50,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, "http://localhost:5173"], // Agregamos variable para el front en la nube
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
     credentials: true,
   }),
 );
