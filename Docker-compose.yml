@@ -1,0 +1,42 @@
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: inventory-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: inventory_db
+      MYSQL_USER: user_dev
+      MYSQL_PASSWORD: password_dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: inventory-api
+    restart: always
+    ports:
+      - "3100:3100"
+    environment:
+      # Usamos el nombre del servicio 'mysql-db' en la URL
+      DATABASE_URL: mysql://user_dev:password_dev@mysql-db:3306/inventory_db
+      PORT: 3100
+      FRONTEND_URL: http://localhost:5173
+    depends_on:
+      - mysql-db
+
+  frontend:
+    build: ./frontend
+    container_name: inventory-web
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3100/api
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
